@@ -1,103 +1,46 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="min-h-screen bg-yellow-300 flex flex-col items-center justify-center p-8 font-mono">
+      <header className="mb-16 w-full max-w-3xl mx-auto text-center">
+        <h1 className="text-8xl font-black text-black tracking-tighter mb-4 drop-shadow-[8px_8px_0px_rgba(0,0,0,1)] transform -rotate-2">
+          WELCOME!
+        </h1>
+        <div className="w-full h-6 bg-black rotate-1 mb-2"></div>
+        <p className="text-2xl font-bold text-black uppercase tracking-widest bg-white border-4 border-black inline-block px-8 py-2 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transform rotate-2">
+          Explore the site
+        </p>
+      </header>
+      <nav className="flex flex-col md:flex-row gap-12 w-full max-w-4xl justify-center items-center">
+        <Link
+          href="/profile"
+          className="group flex-1 bg-white border-8 border-black p-10 flex flex-col items-center justify-center shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-rotate-2 hover:scale-105 transition-all duration-200 transform"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <span className="text-5xl font-black text-black mb-4 group-hover:text-yellow-300 transition-colors">PROFILE</span>
+          <span className="bg-black text-yellow-300 px-6 py-2 font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-lg">See my role</span>
+        </Link>
+        <Link
+          href="/about"
+          className="group flex-1 bg-black border-8 border-white p-10 flex flex-col items-center justify-center shadow-[12px_12px_0px_0px_rgba(255,255,255,1)] hover:rotate-2 hover:scale-105 transition-all duration-200 transform"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <span className="text-5xl font-black text-white mb-4 group-hover:text-yellow-300 transition-colors">ABOUT</span>
+          <span className="bg-yellow-300 text-black px-6 py-2 font-bold border-2 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] text-lg">What is this?</span>
+        </Link>
+        <Link
+          href="/product"
+          className="group flex-1 bg-yellow-300 border-8 border-black p-10 flex flex-col items-center justify-center shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-rotate-3 hover:scale-105 transition-all duration-200 transform"
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+          <span className="text-5xl font-black text-black mb-4 group-hover:text-white transition-colors">PRODUCTS</span>
+          <span className="bg-black text-yellow-300 px-6 py-2 font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-lg">Shop now</span>
+        </Link>
+      </nav>
+      <footer className="mt-24 w-full max-w-3xl mx-auto">
+        <div className="w-full h-6 bg-black -rotate-1"></div>
+        <p className="text-center text-black font-bold mt-4 text-lg">
+          © {new Date().getFullYear()} ALVANO HASTAGINA - WEB JDA DEMO
+        </p>
       </footer>
     </div>
-  );
+  )
 }
