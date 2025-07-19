@@ -28,7 +28,7 @@ export default function Home() {
           <span className="bg-yellow-300 text-black px-6 py-2 font-bold border-2 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] text-lg">What is this?</span>
         </Link>
         <Link
-          href="/product"
+          href="/art"
           className="group flex-1 bg-yellow-300 border-8 border-black p-10 flex flex-col items-center justify-center shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-rotate-3 hover:scale-105 transition-all duration-200 transform"
         >
           <span className="text-5xl font-black text-black mb-4 group-hover:text-white transition-colors">PRODUCTS</span>

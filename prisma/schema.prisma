@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model arts {
+  art_id      Int     @id @default(autoincrement())
+  name        String
+  price       Int
+  image       String
+  description String?
+  createdAt   DateTime @default(now())
+}
