@@ -159,8 +159,8 @@ export default function AboutPage() {
             <p className="text-white font-bold text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">
               © {new Date().getFullYear()} JABAR DIGITAL ACADEMY ASSIGNMENT
             </p>
-            <Link href="/profile" className="bg-black text-white px-6 py-3 font-bold border-4 border-white hover:bg-white hover:text-black hover:border-black transition-all transform hover:scale-105">
-              VIEW PROFILE
+            <Link href="/about/profile" className="bg-black text-white px-6 py-3 font-bold border-4 border-white hover:bg-white hover:text-black hover:border-black transition-all transform hover:scale-105">
+              VIEW DEV PROFILE
             </Link>
           </div>
         </footer>

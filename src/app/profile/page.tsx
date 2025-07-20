@@ -1,6 +1,20 @@
-import Link from "next/link";
+'use client'
 
-export default function ProfilePage() {
+import Link from "next/link";
+import { useUser } from "@/hooks/useUser";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+export default function ProfileRolePage() {
+  const { user, logoutUser } = useUser()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    logoutUser()
+    router.push("/login")
+  }
+
   return (
     <div className="min-h-screen bg-lime-400 p-8 font-mono">
       <div className="max-w-4xl mx-auto">
@@ -18,7 +32,7 @@ export default function ProfilePage() {
                 Name
               </h2>
               <p className="text-4xl font-black text-black leading-tight">
-                ALVANO HASTAGINA
+                {user.isLoggedIn ? user.name.toUpperCase() : "NOT LOGGED IN"}
               </p>
             </div>
 
@@ -27,29 +41,30 @@ export default function ProfilePage() {
                 Role
               </h2>
               <p className="text-3xl font-black text-black leading-tight">
-                FRONTEND DEVELOPER
+                {user.isLoggedIn ? user.role.toUpperCase() : "GUEST"}
               </p>
             </div>
 
             <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
               <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
-                Skills
+                Email
+              </h2>
+              <p className="text-2xl font-black text-black leading-tight">
+                {user.isLoggedIn ? user.email : "No email"}
+              </p>
+            </div>
+
+            <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
+                Status
               </h2>
               <div className="space-y-2">
-                <div className="bg-black text-white px-3 py-2 inline-block font-bold">
-                  REACT
-                </div>
-                <div className="bg-black text-white px-3 py-2 inline-block font-bold mx-2">
-                  NEXT.JS
-                </div>
-                <div className="bg-black text-white px-3 py-2 inline-block font-bold">
-                  TYPESCRIPT
-                </div>
-                <div className="bg-black text-white px-3 py-2 inline-block font-bold mr-2">
-                  TAILWIND CSS
-                </div>
-                <div className="bg-black text-white px-3 py-2 inline-block font-bold">
-                  KOTLIN
+                <div className={`px-3 py-2 inline-block font-bold ${
+                  user.isLoggedIn 
+                    ? "bg-green-500 text-white" 
+                    : "bg-red-500 text-white"
+                }`}>
+                  {user.isLoggedIn ? "LOGGED IN" : "NOT LOGGED IN"}
                 </div>
               </div>
             </div>
@@ -58,36 +73,29 @@ export default function ProfilePage() {
           <div className="space-y-8">
             <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
               <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
-                About
+                Account Actions
               </h2>
-              <p className="text-lg font-bold text-black leading-relaxed">
-                Frontend & Mobile Developer with hands-on experience in building responsive applications using React, Kotlin, and Tailwind.
-                Passionate about UI/UX design and API integration.
-              </p>
-            </div>
-
-            <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-              <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
-                Contact
-              </h2>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <span className="bg-black text-white px-3 py-1 font-bold mr-3">
-                    EMAIL
-                  </span>
-                  <span className="font-bold text-black">alvanhastagina@gmail.com</span>
-                </div>
-                <Link href={"https://github.com/alvanochi"} className="flex items-center">
-                  <span className="bg-black text-white px-3 py-1 font-bold mr-3">
-                    GITHUB
-                  </span>
-                  <span className="font-bold text-black">@alvanochi</span>
-                </Link>
-                <Link href={"https://linkedin.com/in/alvanoh"} className="flex items-center">
-                  <span className="bg-black text-white px-3 py-1 font-bold mr-3">
-                    LINKEDIN
-                  </span>
-                  <span className="font-bold text-black">alvanoh</span>
+              <div className="space-y-4">
+                {user.isLoggedIn ? (
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-500 text-white px-6 py-3 font-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xl hover:bg-red-600 transition-all w-full"
+                  >
+                    LOGOUT
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="bg-black text-white px-6 py-3 font-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xl hover:bg-gray-800 transition-all inline-block w-full text-center"
+                  >
+                    LOGIN
+                  </Link>
+                )}
+                <Link
+                  href="/register"
+                  className="bg-blue-500 text-white px-6 py-3 font-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xl hover:bg-blue-600 transition-all inline-block w-full text-center"
+                >
+                  REGISTER
                 </Link>
               </div>
             </div>
@@ -98,7 +106,7 @@ export default function ProfilePage() {
         <footer className="mt-12">
           <div className="w-full h-4 bg-black"></div>
           <p className="text-center text-black font-bold mt-4 text-lg">
-            © {new Date().getFullYear()} ALVANO HASTAGINA - FRONTEND DEVELOPER
+            © {new Date().getFullYear()} {user.isLoggedIn ? user.name.toUpperCase() : "GUEST"} - {user.isLoggedIn ? user.role.toUpperCase() : "VISITOR"}
           </p>
         </footer>
       </div>
