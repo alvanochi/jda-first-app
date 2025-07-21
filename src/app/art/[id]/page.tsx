@@ -9,13 +9,7 @@ async function getArtById(id: number) {
   return res
 }
 
-type Props = {
-  params: {
-    id: string
-  }
-}
-
-export default async function DetailArt({params}: Props) {
+export default async function DetailArt({params}: {params: {id: string}}) {
 
     const id = parseInt(params.id)
 
