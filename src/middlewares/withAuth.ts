@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { NextFetchEvent, NextMiddleware, NextRequest, NextResponse } from "next/server";
 
 const onlyAdminPages = ["/admin"]
