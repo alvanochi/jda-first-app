@@ -5,10 +5,9 @@ import Input from "@/components/Input";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useUser } from "@/hooks/useUser";
+import Cookies from "js-cookie";
 
-export default function LoginPage({searchParams}: any) {
-  const {callbackUrl} = searchParams
-
+export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -29,7 +28,6 @@ export default function LoginPage({searchParams}: any) {
             redirect: false,
             email: e.currentTarget.email.value,
             password: e.currentTarget.password.value,
-            callbackUrl: callbackUrl
         })
 
         if(!res?.error) {
@@ -42,9 +40,12 @@ export default function LoginPage({searchParams}: any) {
                     email: session.user.email || '',
                     role: session.user.role || 'user'
                 })
+
+                Cookies.set("isLogin", "true")
+                Cookies.set("role", session.user.role || "user")
             }
             
-            push(callbackUrl || "/")
+            push("/")
         } else {
             setError("Email or Password is incorrect")
             console.log(`${res.status} ${res.error}`)

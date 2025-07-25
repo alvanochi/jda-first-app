@@ -3,8 +3,6 @@
 import { useState, FormEvent } from "react";
 import Input from "@/components/Input";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { useUser } from "@/hooks/useUser";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "" })
@@ -12,7 +10,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
 
   const {push} = useRouter()
-  const { loginUser } = useUser()
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -34,37 +31,13 @@ export default function RegisterPage() {
         body: JSON.stringify(body),
       })
       
+      push("/login")
+
       if (!res.ok) {
         const errorData = await res.json()
         throw new Error(errorData.message || "Registration failed")
       }
       
-      const userData = await res.json()
-      
-      const loginRes = await signIn("credentials", {
-        redirect: false,
-        email: form.email,
-        password: form.password,
-      })
-
-      if (!loginRes?.error) {
-        const userResponse = await fetch('/api/auth/session')
-        const session = await userResponse.json()
-        
-        if (session.user) {
-          loginUser({
-            name: session.user.name || form.name,
-            email: session.user.email || form.email,
-            role: session.user.role || 'user'
-          })
-        }
-        
-        setForm({ name: "", email: "", password: "" })
-        push("/")
-      } else {
-        setError("Registration successful but auto-login failed. Please login manually.")
-      }
-
     } catch(e: any) {
       setError(e?.message || "Registration failed")
     }

@@ -12,6 +12,7 @@ export default function ProfileRolePage() {
   const handleLogout = async () => {
     await signOut({ redirect: false })
     logoutUser()
+    localStorage.clear()
     router.push("/login")
   }
 
