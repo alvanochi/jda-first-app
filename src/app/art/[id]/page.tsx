@@ -9,15 +9,10 @@ async function getArtById(id: number) {
   return res
 }
 
-type Props = {
-  params: {
-    id: string
-  }
-}
+export default async function DetailArt({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const art = await getArtById(parseInt(id))
 
-export default async function DetailArt({ params }: Props) {
-  const id = parseInt(params.id)
-  const art = await getArtById(id)
 
     if(!art) {
         return (
