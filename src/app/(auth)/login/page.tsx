@@ -2,17 +2,18 @@
 
 import { useState, FormEvent } from "react";
 import Input from "@/components/Input";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useUser } from "@/hooks/useUser";
-import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const {push} = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/"
+
   const { loginUser } = useUser()
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -25,9 +26,10 @@ export default function LoginPage() {
     setLoading(true)
     try {
         const res = await signIn("credentials", {
-            redirect: false,
+            redirect: true,
             email: e.currentTarget.email.value,
             password: e.currentTarget.password.value,
+            callbackUrl
         })
 
         if(!res?.error) {
@@ -41,11 +43,8 @@ export default function LoginPage() {
                     role: session.user.role || 'user'
                 })
 
-                Cookies.set("isLogin", "true")
-                Cookies.set("role", session.user.role || "user")
             }
             
-            push("/")
         } else {
             setError("Email or Password is incorrect")
             console.log(`${res.status} ${res.error}`)
