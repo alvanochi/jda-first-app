@@ -32,6 +32,7 @@ const userSlice = createSlice({
       state.email = ''
       state.role = ''
       state.isLoggedIn = false
+      localStorage.clear()
     },
   },
 })
