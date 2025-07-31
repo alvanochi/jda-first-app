@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 async function getArtById(id: number) {
-  const res = await prisma.arts.findUnique({
+  const res = await prisma.art.findUnique({
   where: { art_id: id },
   });
   return res
@@ -52,9 +52,6 @@ export default async function DetailArt({ params }: { params: Promise<{ id: stri
           {art.name}
         </h1>
         <div className="w-full h-2 bg-black mb-6" />
-        <p className="text-3xl font-bold text-black mb-2">
-          Rp {art.price.toLocaleString("id-ID")}
-        </p>
         <p className="text-lg font-bold text-black mb-8 text-center">
           {art.description}
         </p>

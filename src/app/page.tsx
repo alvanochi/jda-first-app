@@ -1,12 +1,9 @@
-import Header from "@/components/Header";
 import { ArrowRight, Brush, GamepadIcon, Grid3X3, Palette, Star, Trophy, Users, Zap } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-yellow-300 w-full font-mono">
-      <Header />
-
        <section className="py-12 sm:py-16 md:py-24 bg-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="grid grid-cols-10 sm:grid-cols-20 gap-1 h-full">
@@ -29,7 +26,7 @@ export default function Home() {
             </h2>
             <p className="text-lg sm:text-2xl md:text-3xl font-bold mb-8 sm:mb-16 max-w-3xl mx-auto leading-tight text-gray-800">
               Social media platform for{" "}
-              <span className="bg-yellow-300 px-1 sm:px-2 py-1 border border-black sm:border-2">pixel art</span>{" "}
+              <span className="bg-yellow-300 px-1 sm:px-2 py-1 border border-black ml-4 sm:ml-0 sm:border-2">pixel art</span>{" "}
               artists. Create artwork, collect points, and become a{" "}
               <span className="text-red-500 font-black">pixel legend!</span>
             </p>
@@ -38,7 +35,7 @@ export default function Home() {
                 START CREATING
                 <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8" />
               </Link>
-              <Link href="/art" className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 border-2 sm:border-4 border-black font-black text-lg sm:text-2xl bg-orange-400 hover:bg-orange-300 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+              <Link href="/art" className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 border-2 sm:border-4 border-black text-black font-black text-lg sm:text-2xl bg-orange-400 hover:bg-orange-300 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
                 VIEW ART
               </Link>
             </div>
@@ -52,7 +49,6 @@ export default function Home() {
             MAIN <span className="text-purple-600">FEATURES</span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
-            {/* Feature 1 */}
             <div className="bg-white border-4 sm:border-6 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 transform hover:-translate-x-1 hover:-translate-y-1 sm:hover:-translate-x-2 sm:hover:-translate-y-2 p-6 sm:p-8">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-orange-500 border-2 sm:border-4 border-black flex items-center justify-center mb-4 sm:mb-6 transform rotate-3">
                 <Palette className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
@@ -64,7 +60,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Feature 2 */}
             <div className="bg-white border-4 sm:border-6 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 transform hover:-translate-x-1 hover:-translate-y-1 sm:hover:-translate-x-2 sm:hover:-translate-y-2 p-6 sm:p-8">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500 to-blue-500 border-2 sm:border-4 border-black flex items-center justify-center mb-4 sm:mb-6 transform -rotate-3">
                 <GamepadIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
@@ -76,7 +71,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Feature 3 */}
             <div className="bg-white border-4 sm:border-6 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 transform hover:-translate-x-1 hover:-translate-y-1 sm:hover:-translate-x-2 sm:hover:-translate-y-2 p-6 sm:p-8 md:col-span-2 lg:col-span-1">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500 to-pink-500 border-2 sm:border-4 border-black flex items-center justify-center mb-4 sm:mb-6 transform rotate-2">
                 <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
@@ -168,14 +162,14 @@ export default function Home() {
                 <Grid3X3 className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <span className="text-2xl sm:text-3xl font-black text-black font-mono">
-                PIXEL<span className="text-purple-600">ART</span>
+                PIX<span className="text-purple-600">ART</span>
               </span>
             </div>
             <div className="text-base sm:text-lg md:text-xl font-bold text-gray-700 text-center md:text-right">
-              © {new Date().getFullYear()} PixelArt. 
+              © {new Date().getFullYear()} PixArt. 
               <span className="block mt-2 md:mt-0 md:inline"> Platform for{" "}
-                <span className="bg-yellow-300 px-1 sm:px-2 py-1 border border-black sm:border-2">pixel art artists</span>
-                .
+                <span className="bg-yellow-300 px-1 sm:px-2 py-1 border border-black sm:border-2">pixel art</span>
+                {" "}artists.
               </span>
             </div>
           </div>

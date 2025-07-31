@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const id = searchParams.get("id")
 
   if (id) {
-    const detailArt = await prisma.arts.findUnique({
+    const detailArt = await prisma.art.findUnique({
       where: { art_id: Number(id) },
     })
     if (detailArt) {
@@ -16,20 +16,20 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const arts = await prisma.arts.findMany()
+  const arts = await prisma.art.findMany()
   return NextResponse.json({ status: 200, message: "success", data: arts })
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
   try {
-    const newArt = await prisma.arts.create({
+    const newArt = await prisma.art.create({
       data: {
         name: body.name,
-        price: Number(body.price),
         description: body.description ?? null,
         image: body.image,
         art_id: body.art_id ?? undefined,
+        userId: body.user_id ?? undefined
       },
     })
     return NextResponse.json({ status: 201, message: "created", data: newArt })
@@ -41,11 +41,10 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   const body = await req.json()
   try {
-    const updated = await prisma.arts.update({
+    const updated = await prisma.art.update({
       where: { art_id: Number(body.art_id ?? body.id) },
       data: {
         name: body.name,
-        price: Number(body.price),
         description: body.description ?? null,
         image: body.image,
       },
@@ -63,7 +62,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ status: 400, message: "id required", data: {} })
   }
   try {
-    const deleted = await prisma.arts.delete({
+    const deleted = await prisma.art.delete({
       where: { art_id: Number(id) },
     })
     return NextResponse.json({ status: 200, message: "deleted", data: deleted })

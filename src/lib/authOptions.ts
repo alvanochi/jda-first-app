@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, account, user }: any) {
       if (account?.provider === "credentials") {
+        token.user_id = user.user_id
         token.email = user.email
         token.name = user.name
         token.role = user.role
@@ -45,6 +46,9 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }: any) {
+      if ("user_id" in token) {
+        session.user.user_id = token.user_id
+      }
       if ("email" in token) {
         session.user.email = token.email
       }

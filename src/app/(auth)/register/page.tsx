@@ -9,7 +9,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const {push} = useRouter()
+  const router = useRouter()
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -31,11 +31,11 @@ export default function RegisterPage() {
         body: JSON.stringify(body),
       })
       
-      push("/login")
-
-      if (!res.ok) {
+      if(!res.ok) {
         const errorData = await res.json()
         throw new Error(errorData.message || "Registration failed")
+      } else {
+        router.push("/login")
       }
       
     } catch(e: any) {
@@ -51,8 +51,14 @@ export default function RegisterPage() {
         onSubmit={handleSubmit}
         className="w-full flex flex-col gap-6"
       >
-        <h1 className="text-5xl font-black mb-2 tracking-tighter text-center">REGISTER</h1>
-        <div className="w-full h-2 bg-black mb-4" />
+        <div className="text-center mb-2">
+            <h2 className="text-4xl sm:text-6xl font-black mb-2 tracking-tight">
+              <span className="text-black">SIGNUP</span>
+            </h2>
+            <p className="text-lg sm:text-xl font-bold text-gray-700">
+              Join the <span className="bg-yellow-300 px-1 border border-black">PixArt</span> community!
+            </p>
+        </div>
         <Input
           name="name"
           type="text"

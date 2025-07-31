@@ -11,7 +11,6 @@ export default function ArtList({art, handleEdit, handleDelete}: ArtListProps) {
         <li key={art.art_id} className="bg-white text-black border-4 border-yellow-300 p-4 shadow-[6px_6px_0px_0px_rgba(255,255,0,1)] flex flex-col gap-2">
             <div className="flex justify-between items-center">
                 <span className="font-black text-xl">{art.name}</span>
-                <span className="font-bold">Rp {Number(art.price).toLocaleString("id-ID")}</span>
             </div>
             <div className="text-xs mb-2 truncate">{art.description}</div>
             <div className="flex gap-4">

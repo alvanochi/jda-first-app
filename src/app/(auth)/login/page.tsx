@@ -4,12 +4,14 @@ import { useState, FormEvent } from "react";
 import Input from "@/components/Input";
 import { signIn } from "next-auth/react";
 import { useUser } from "@/hooks/useUser";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+
+  const { push } = useRouter()
 
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/"
@@ -26,7 +28,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
         const res = await signIn("credentials", {
-            redirect: true,
+            redirect: false,
             email: e.currentTarget.email.value,
             password: e.currentTarget.password.value,
             callbackUrl
@@ -43,6 +45,7 @@ export default function LoginPage() {
                     role: session.user.role || 'user'
                 })
 
+                push(callbackUrl)
             }
             
         } else {
@@ -62,8 +65,14 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="w-full flex flex-col gap-6"
       >
-        <h1 className="text-5xl font-black mb-2 tracking-tighter text-center">LOGIN</h1>
-        <div className="w-full h-2 bg-black mb-4" />
+        <div className="text-center mb-2">
+            <h2 className="text-4xl sm:text-6xl font-black mb-2 tracking-tight">
+              <span className="text-black">LOGIN</span>
+            </h2>
+            <p className="text-lg sm:text-xl font-bold text-gray-700">
+              Welcome back to <span className="bg-yellow-300 px-1 border border-black">PixArt</span>!
+            </p>
+        </div>
         <Input
           name="email"
           type="email"

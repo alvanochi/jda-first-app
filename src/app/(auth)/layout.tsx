@@ -4,10 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
-    const pathname = usePathname();
+    const pathname = usePathname()
 
   return (
-    <div className="min-h-screen bg-yellow-300 flex flex-col items-center justify-center p-8 font-mono">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 font-mono">
+      <div className="absolute inset-0 opacity-5">
+          <div className="grid grid-cols-10 sm:grid-cols-20 gap-1 h-full">
+            {Array.from({ length: 200 }).map((_, i) => (
+              <div key={i} className="bg-black w-full h-4 sm:h-8"></div>
+            ))}
+          </div>
+        </div>
         <div className="bg-white p-8 text-black border-8 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-md transform -rotate-2">
             {children}
             <div className="mt-6 md:flex md:justify-center md:items-center md:gap-4 block text-center">

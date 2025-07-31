@@ -12,10 +12,10 @@ export default function AdminPage() {
   const [form, setForm] = useState<{
     art_id: number | null
     name: string
-    price: string
     description: string
     image: string
-  }>({ art_id: null, name: "", price: "", description: "", image: "" })
+    user_id: number
+  }>({ art_id: null, name: "", description: "", image: "", user_id: 3 })
   const [editId, setEditId] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -52,7 +52,6 @@ export default function AdminPage() {
         const body = {
           art_id: editId,
           name: form.name,
-          price: Number(form.price),
           description: form.description,
           image: form.image,
         }
@@ -65,9 +64,9 @@ export default function AdminPage() {
       } else {
         const body = {
           name: form.name,
-          price: Number(form.price),
           description: form.description,
           image: form.image,
+          user_id: 3
         }
         const res = await fetch("/api/art", {
           method: "POST",
@@ -76,7 +75,7 @@ export default function AdminPage() {
         })
         if (!res.ok) throw new Error("Failed to create")
       }
-      setForm({ art_id: null, name: "", price: "", description: "", image: "" })
+      setForm({ art_id: null, name: "", description: "", image: "", user_id: 3 })
       setEditId(null)
       await fetchArts()
     } catch (e) {
@@ -89,9 +88,9 @@ export default function AdminPage() {
     setForm({
       art_id: art.art_id,
       name: art.name,
-      price: art.price.toString(),
       description: art.description ?? "",
       image: art.image,
+      user_id: art.user_id,
     })
     setEditId(art.art_id)
   }
@@ -111,7 +110,7 @@ export default function AdminPage() {
       await fetchArts()
       if (editId === deleteId) {
         setEditId(null)
-        setForm({ art_id: null, name: "", price: "", description: "", image: "" })
+        setForm({ art_id: null, name: "", description: "", image: "", user_id: 3 });
       }
     } catch (e) {
       setError("Failed to delete art")
@@ -160,14 +159,6 @@ export default function AdminPage() {
                 required
               />
               <Input
-                name="price"
-                placeholder="Price"
-                type="number"
-                value={form.price}
-                onChange={handleChange}
-                required
-              />
-              <Input
                 name="image"
                 placeholder="https://cdn.lospec.com/..."
                 value={form.image}
@@ -194,7 +185,7 @@ export default function AdminPage() {
                   className="bg-black text-yellow-300 px-6 py-2 font-black border-2 border-yellow-300 shadow-[2px_2px_0px_0px_rgba(255,255,0,1)] hover:bg-yellow-300 hover:text-black transition-all text-xl"
                   onClick={() => {
                     setEditId(null);
-                    setForm({ art_id: null, name: "", price: "", description: "", image: "" });
+                    setForm({ art_id: null, name: "", description: "", image: "", user_id: 3});
                   }}
                 >
                   CANCEL
