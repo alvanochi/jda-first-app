@@ -53,7 +53,7 @@ export default function RegisterPage() {
       >
         <div className="text-center mb-2">
             <h2 className="text-4xl sm:text-6xl font-black mb-2 tracking-tight">
-              <span className="text-black">SIGNUP</span>
+              <span className="text-black">REGISTER</span>
             </h2>
             <p className="text-lg sm:text-xl font-bold text-gray-700">
               Join the <span className="bg-yellow-300 px-1 border border-black">PixArt</span> community!

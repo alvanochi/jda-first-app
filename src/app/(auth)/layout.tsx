@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             {children}
             <div className="mt-6 md:flex md:justify-center md:items-center md:gap-4 block text-center">
                 <p className="text-black mb-4 md:mb-0 font-bold">{pathname === '/login' ? 'Don\'t have an account?' : 'Already have an account?'}</p>
-                <Link href={pathname === '/login' ? '/register' : '/login'} className="font-black text-yellow-300 bg-black px-4 py-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-yellow-300 hover:text-black transition-all">{pathname === '/login' ? 'Sign up' : 'Sign in'}</Link>
+                <Link href={pathname === '/login' ? '/register' : '/login'} className="font-black text-yellow-300 bg-black px-4 py-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-yellow-300 hover:text-black transition-all">{pathname === '/login' ? 'Register' : 'Login'}</Link>
             </div>
         </div>
     </div>

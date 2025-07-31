@@ -24,11 +24,11 @@ async function getArts() {
 export default async function ArtPage() {
   const arts = await getArts();
   return (
-    <div className="min-h-screen bg-blue-400 p-8 font-mono">
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-8 font-mono">
       <div className="max-w-5xl mx-auto">
         <header className="mb-12 text-center">
           <h1 className="text-7xl font-black text-black mb-4 tracking-tighter drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-            ART LIST
+            MY ARTS
           </h1>
           <div className="w-full h-6 bg-black transform rotate-1" />
         </header>

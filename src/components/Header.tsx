@@ -13,7 +13,7 @@ export default function Header() {
   const { user, logoutUser } = useUser()
 
   const pathname = usePathname()
-  const displayHeader = ["/", "/profile"]
+  const displayHeader = ["/", "/profile", "/feed"]
 
 
   const handleLogout = async () => {
@@ -40,6 +40,12 @@ export default function Header() {
               PIX<span className="text-purple-600">ART</span>
             </h1>
           </Link>
+
+          {pathname === "/feed" && (
+            <h1 className="md:text-7xl mr-4 text-4xl font-black text-black tracking-tighter md:drop-shadow-[4px_4px_0px_rgba(0,0,0,1)] drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+              FEED
+            </h1>
+          )}
 
           <div className="hidden sm:flex gap-3 md:gap-4 items-center">
             {user?.isLoggedIn ? (
@@ -93,7 +99,7 @@ export default function Header() {
                   href="/register"
                   className="px-4 md:px-8 py-2 md:py-4 border-2 md:border-4 border-black font-black text-sm md:text-lg bg-red-500 text-white hover:bg-red-400 transition-all duration-200 transform hover:scale-105 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] md:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
                 >
-                  SIGN UP
+                  REGISTER
                 </Link>
               </>
             )}

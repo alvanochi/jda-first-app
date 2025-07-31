@@ -5,6 +5,13 @@ import Link from "next/link";
 async function getArtById(id: number) {
   const res = await prisma.art.findUnique({
   where: { art_id: id },
+  include: {
+    user: {
+      select: {
+        name: true,
+      }
+    }
+  }
   });
   return res
 }
@@ -36,7 +43,7 @@ export default async function DetailArt({ params }: { params: Promise<{ id: stri
     
     
   return (
-    <div className="min-h-screen bg-blue-400 flex flex-col items-center justify-center p-8 font-mono">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 font-mono">
       <div className="bg-white border-8 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-2xl w-full p-8 flex flex-col items-center transform -rotate-2">
         <div className="w-full flex justify-center mb-8">
           <Image
@@ -57,7 +64,7 @@ export default async function DetailArt({ params }: { params: Promise<{ id: stri
         </p>
         <div className="flex w-full justify-between">
           <span className="bg-black text-blue-400 px-4 py-2 font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            PIXEL-ART
+            {art.user.name}
           </span>
           <span className="bg-blue-400 text-black px-4 py-2 font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             ART
@@ -67,7 +74,7 @@ export default async function DetailArt({ params }: { params: Promise<{ id: stri
 
       <div className="mt-12 w-full max-w-lg">
         <div className="h-4 bg-black mb-2 rotate-1" />
-        <div className="h-4 bg-white -rotate-2" />
+        <div className="h-4 bg-black -rotate-2" />
       </div>
     </div>
   )
