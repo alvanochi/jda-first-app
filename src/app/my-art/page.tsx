@@ -63,7 +63,7 @@ export default async function ArtPage() {
             title="Website Information"
           >
             <Plus className="md:w-8 md:h-8 w-6 h-6 text-black" />
-          </Link>
+      </Link>
     </div>
   )
 }

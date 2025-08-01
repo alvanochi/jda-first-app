@@ -2,10 +2,10 @@
 
 import { useState, useEffect, type FormEvent, type ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
-import { Save, User, Crown, X } from "lucide-react"
+import { ArrowLeft, Save, User, Crown, X } from "lucide-react"
 import Link from "next/link"
 import Input from "@/components/Input"
-import { useUser } from "@/hooks/useUser"
+import { useSession } from "next-auth/react"
 
 interface UserProfile {
   user_id: number
@@ -20,6 +20,7 @@ interface UserProfile {
 
 export default function EditProfilePage() {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const [user, setUser] = useState<UserProfile | null>(null)
   const [form, setForm] = useState({
     name: "",
@@ -32,25 +33,39 @@ export default function EditProfilePage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
-  const { user: userStore } = useUser()
-
   useEffect(() => {
     async function fetchUserProfile() {
+      if (status === "loading") return 
+
+      if (status === "unauthenticated" || !session?.user?.email) {
+        setError("Please login to access this page")
+        setLoading(false)
+        return
+      }
+
       try {
+        const userRes = await fetch(`/api/user?id=${session.user.user_id}`)
+        const userData = await userRes.json()
 
-        const res = await fetch(`/api/user?id=${user?.user_id}`)
-        const data = await res.json()
+        if (userData.status === 200) {
+          const userId = userData.data.user_id
 
-        if (data.status === 200) {
-          setUser(data.data)
-          setForm({
-            name: data.data.name,
-            email: data.data.email,
-            password: "",
-            confirmPassword: "",
-          })
+          const res = await fetch(`/api/user?id=${userId}`)
+          const data = await res.json()
+
+          if (data.status === 200) {
+            setUser(data.data)
+            setForm({
+              name: data.data.name,
+              email: data.data.email,
+              password: "",
+              confirmPassword: "",
+            })
+          } else {
+            setError("Failed to load profile data")
+          }
         } else {
-          setError("Failed to load profile data")
+          setError("User not found")
         }
       } catch (e) {
         setError("Failed to load profile data")
@@ -59,7 +74,7 @@ export default function EditProfilePage() {
     }
 
     fetchUserProfile()
-  }, [])
+  }, [session, status])
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -70,7 +85,6 @@ export default function EditProfilePage() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    // Validate passwords match if password is being changed
     if (form.password && form.password !== form.confirmPassword) {
       setError("Passwords do not match!")
       return
@@ -122,11 +136,29 @@ export default function EditProfilePage() {
     setSaving(false)
   }
 
-  if (loading) {
+  if (loading || status === "loading") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-300 to-purple-300 flex items-center justify-center p-8 font-mono">
         <div className="bg-white border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] p-12 transform rotate-2">
           <div className="text-4xl font-black text-black animate-pulse">LOADING PROFILE...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-400 to-pink-400 flex flex-col items-center justify-center p-8 font-mono">
+        <div className="bg-white border-8 border-black shadow-[16px_16px_0px_0px_rgba(255,0,0,1)] max-w-2xl w-full p-12 flex flex-col items-center transform -rotate-2">
+          <h1 className="text-6xl font-black text-red-600 mb-6 tracking-tighter text-center">ACCESS DENIED</h1>
+          <div className="w-full h-4 bg-black mb-8 rotate-1" />
+          <p className="text-2xl font-bold text-black text-center mb-8">
+            Please login to access this page.
+            <br />
+            <Link href="/auth/signin" className="underline hover:text-blue-400">
+              Click here to login
+            </Link>
+          </p>
         </div>
       </div>
     )
@@ -163,6 +195,27 @@ export default function EditProfilePage() {
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
+        <div className="mb-8 flex items-center justify-between">
+          <Link
+            href="/profile"
+            className="flex items-center gap-3 bg-black text-white px-6 py-3 border-4 border-white font-black text-lg hover:bg-white hover:text-black transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+          >
+            <ArrowLeft className="w-6 h-6" />
+            BACK TO PROFILE
+          </Link>
+
+          <div className="flex items-center gap-3 bg-white border-4 border-black px-6 py-3 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 border-2 border-black flex items-center justify-center transform rotate-3">
+              <User className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-black text-black">{user.name}</span>
+            {user.role === "admin" && (
+              <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-400 border-2 border-black flex items-center justify-center transform rotate-12">
+                <Crown className="w-3 h-3 text-black" />
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="text-center mb-12">
           <h1 className="text-6xl lg:text-8xl font-black text-black mb-4 tracking-tighter drop-shadow-[6px_6px_0px_rgba(0,0,0,1)]">

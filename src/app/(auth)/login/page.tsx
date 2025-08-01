@@ -14,7 +14,7 @@ export default function LoginPage() {
   const { push } = useRouter()
 
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/"
+  const callbackUrl = searchParams.get("callbackUrl") || "/feed"
 
   const { loginUser } = useUser()
 
