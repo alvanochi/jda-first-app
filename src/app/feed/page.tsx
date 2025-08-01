@@ -4,6 +4,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Plus } from "lucide-react";
 
+export const dynamic = "force-dynamic"
+
 async function getAllArts() {
   const arts = await prisma.art.findMany({
     include: { user: {

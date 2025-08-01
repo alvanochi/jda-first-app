@@ -292,7 +292,7 @@ export default function AdminPage() {
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 border-4 border-black flex items-center justify-center transform rotate-12">
                     <Palette className="w-6 h-6 text-white" />
                   </div>
-                  <h2 className="text-4xl font-black text-black">ARTWORKS ({arts.length})</h2>
+                  <h2 className="text-4xl font-black text-black">ARTS ({arts.length})</h2>
                 </div>
 
                 <div className="space-y-6 max-h-96 overflow-y-auto">
@@ -362,7 +362,7 @@ export default function AdminPage() {
                       onChange={handleArtChange}
                       required
                       className="w-full p-4 border-4 border-black text-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-yellow-100"
-                      placeholder="Artwork name..."
+                      placeholder="Art name..."
                     />
                   </div>
 
@@ -387,7 +387,7 @@ export default function AdminPage() {
                       onChange={handleArtChange}
                       rows={3}
                       className="w-full p-4 border-4 border-black text-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-green-100 resize-none"
-                      placeholder="Artwork description..."
+                      placeholder="Art description..."
                     />
                   </div>
 

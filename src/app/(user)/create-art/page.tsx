@@ -4,6 +4,7 @@ import { useState, type FormEvent, type ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Palette, Save, Eye } from "lucide-react"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
 
 export default function CreateArtPage() {
   const router = useRouter()
@@ -14,6 +15,9 @@ export default function CreateArtPage() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+
+  const { data: session, status } = useSession()
+  
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -32,7 +36,7 @@ export default function CreateArtPage() {
           name: form.name,
           description: form.description,
           image: form.image,
-          user_id: 3, // This should come from session in real app
+          user_id: session?.user.user_id,
         }),
       })
 
