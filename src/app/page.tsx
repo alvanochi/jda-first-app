@@ -35,7 +35,7 @@ export default function Home() {
                 START CREATING
                 <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8" />
               </Link>
-              <Link href="/art" className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 border-2 sm:border-4 border-black text-black font-black text-lg sm:text-2xl bg-orange-400 hover:bg-orange-300 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+              <Link href="/my-art" className="w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 border-2 sm:border-4 border-black text-black font-black text-lg sm:text-2xl bg-orange-400 hover:bg-orange-300 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
                 VIEW ART
               </Link>
             </div>

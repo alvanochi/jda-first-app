@@ -10,7 +10,7 @@ export default function CreateArtPage() {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    image: "",
+    image: "https://cdn.lospec.com/thumbnails/gallery/kyle-d00/pixel-portrait-2-default.png",
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
