@@ -1,25 +1,39 @@
+import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+
+  if (!session || !session.user?.user_id) {
+    return NextResponse.json({ status: 401, message: "Unauthorized", data: {} })
+  }
+
   const { searchParams } = new URL(req.url)
   const id = searchParams.get("id")
 
   if (id) {
     const detailArt = await prisma.art.findUnique({
       where: { art_id: Number(id) },
-      include: {
-        user: true
-      },
+      include: { user: true },
     })
-    if (detailArt) {
-      return NextResponse.json({ status: 200, message: "success", data: detailArt })
-    } else {
+
+    if (!detailArt) {
       return NextResponse.json({ status: 404, message: "data not found", data: {} })
     }
+
+    if (detailArt.userId !== session.user.user_id) {
+      return NextResponse.json({ status: 403, message: "Forbidden", data: {} })
+    }
+
+    return NextResponse.json({ status: 200, message: "success", data: detailArt })
   }
 
-  const arts = await prisma.art.findMany()
+  const arts = await prisma.art.findMany({
+    where: { userId: session.user.user_id },
+    include: { user: true },
+  })
   return NextResponse.json({ status: 200, message: "success", data: arts })
 }
 

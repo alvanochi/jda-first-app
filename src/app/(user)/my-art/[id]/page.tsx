@@ -6,17 +6,6 @@ import { Edit, Trash2, Save, X } from "lucide-react"
 import ModalDelete from "@/components/ModalDelete"
 import { IArt } from "@/types/IArt"
 
-interface Art {
-  art_id: number
-  name: string
-  description: string | null
-  image: string
-  createdAt: Date
-  user: {
-    name: string
-  }
-}
-
 async function getArtById(id: number): Promise<IArt | null> {
   const res = await fetch(`/api/art?id=${id}`)
   const data = await res.json()
