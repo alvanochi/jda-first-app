@@ -2,12 +2,12 @@
 
 import { useState, type FormEvent, type ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Palette, Save, Eye } from "lucide-react"
+import { Palette, Save, Eye } from "lucide-react"
 import Image from "next/image"
 import { useSession } from "next-auth/react"
 
 export default function CreateArtPage() {
-  const router = useRouter()
+  const { push } = useRouter()
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -42,8 +42,7 @@ export default function CreateArtPage() {
 
       if (!res.ok) throw new Error("Failed to create art")
 
-      router.push(`/my-art`)
-      router.refresh()
+      push(`/my-art`)
     } catch (e) {
       setError("Failed to create art. Please try again.")
     }

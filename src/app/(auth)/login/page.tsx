@@ -4,14 +4,13 @@ import { useState, FormEvent } from "react";
 import Input from "@/components/Input";
 import { signIn } from "next-auth/react";
 import { useUser } from "@/hooks/useUser";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const router = useRouter()
 
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/feed"
@@ -45,8 +44,7 @@ export default function LoginPage() {
                     role: session.user.role || 'user'
                 })
 
-                router.push(callbackUrl)
-                router.refresh()
+                window.location.href = callbackUrl
             }
             
         } else {

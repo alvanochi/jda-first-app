@@ -547,6 +547,7 @@ export default function AdminPage() {
                       required={!editUserId} 
                       className="w-full p-4 border-4 border-black text-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-red-100"
                       placeholder={editUserId ? "Leave blank to keep current password" : "Enter password..."}
+                      disabled
                     />
                   </div>
 
