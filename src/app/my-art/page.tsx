@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { IArt } from "@/types/IArt";
 import { prisma } from "@/lib/prisma";
@@ -38,7 +37,7 @@ export default async function ArtPage() {
                 className="block bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 transform hover:-rotate-2 hover:scale-105 transition-all duration-200"
               >
                 <div className="flex flex-col items-center">
-                  <Image
+                  <img
                     src={art.image}
                     alt={art.name}
                     width={300}

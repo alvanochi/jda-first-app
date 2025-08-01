@@ -43,6 +43,7 @@ export default function CreateArtPage() {
       if (!res.ok) throw new Error("Failed to create art")
 
       router.push(`/my-art`)
+      router.refresh()
     } catch (e) {
       setError("Failed to create art. Please try again.")
     }

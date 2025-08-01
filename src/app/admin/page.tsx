@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 import { Users, Palette, Crown, Shield, Trash2, Edit, Plus } from "lucide-react"
-import Image from "next/image"
 import ModalDelete from "@/components/ModalDelete"
 import type { IArt } from "@/types/IArt"
 import type { IUser } from "@/types/IUser"
@@ -303,7 +302,7 @@ export default function AdminPage() {
                       className="bg-gradient-to-r from-blue-100 to-purple-100 border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
                     >
                       <div className="flex items-center gap-6">
-                        <Image
+                        <img
                           src={art.image || "/placeholder.svg"}
                           alt={art.name}
                           width={80}

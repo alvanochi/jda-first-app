@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import Image from "next/image";
 import Link from "next/link";
 
 async function getArtById(id: number) {
@@ -46,13 +45,12 @@ export default async function DetailArt({ params }: { params: Promise<{ id: stri
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 font-mono">
       <div className="bg-white border-8 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-2xl w-full p-8 flex flex-col items-center transform -rotate-2">
         <div className="w-full flex justify-center mb-8">
-          <Image
+          <img
             src={art.image}
             alt={art.name}
             width={400}
             height={400}
             className="border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-blue-400 object-contain"
-            priority
           />
         </div>
         <h1 className="text-5xl font-black text-black mb-4 tracking-tighter text-center">

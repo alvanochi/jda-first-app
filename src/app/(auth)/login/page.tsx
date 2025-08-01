@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const { push } = useRouter()
+  const router = useRouter()
 
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/feed"
@@ -45,7 +45,8 @@ export default function LoginPage() {
                     role: session.user.role || 'user'
                 })
 
-                push(callbackUrl)
+                router.push(callbackUrl)
+                router.refresh()
             }
             
         } else {

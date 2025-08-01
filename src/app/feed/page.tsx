@@ -1,5 +1,4 @@
 
-import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Plus } from "lucide-react";
@@ -64,7 +63,7 @@ export default async function FeedPage() {
                   </div>
                 </div>
                 <Link href={`/feed/${art.art_id}`} className="block">
-                  <Image
+                  <img
                     src={art.image}
                     alt={art.name}
                     width={400}

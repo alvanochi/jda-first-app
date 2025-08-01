@@ -1,5 +1,5 @@
-"use client"
-import Image from "next/image"
+'use client'
+
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Edit, Trash2, Save, X } from "lucide-react"
@@ -153,7 +153,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-pink-300 p-8 font-mono relative overflow-hidden">
-      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="grid grid-cols-20 gap-1 h-full">
           {Array.from({ length: 400 }).map((_, i) => (
@@ -163,10 +162,8 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
-        {/* Header with Back Button */}
         <div className="mb-8 flex items-center justify-end">
 
-          {/* Action Buttons */}
           <div className="flex gap-4">
             {!isEditing ? (
               <>
@@ -207,10 +204,8 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="bg-white border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] p-8 transform -rotate-1 hover:rotate-0 transition-all duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {/* Image Section */}
             <div className="flex flex-col items-center">
               {isEditing ? (
                 <div className="w-full">
@@ -226,13 +221,13 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
               ) : null}
 
               <div className="relative">
-                <Image
+                <img
                   src={isEditing ? editForm.image : art.image}
                   alt={isEditing ? editForm.name : art.name}
                   width={400}
                   height={400}
                   className="border-6 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-gradient-to-br from-blue-400 to-purple-400 object-contain transform rotate-2 hover:-rotate-2 transition-all duration-300"
-                  priority
+                  
                 />
                 {isEditing && (
                   <div className="absolute -top-4 -right-4 bg-yellow-400 border-4 border-black px-3 py-1 font-black text-black transform rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -242,9 +237,7 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
               </div>
             </div>
 
-            {/* Content Section */}
             <div className="space-y-6">
-              {/* Title */}
               <div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 border-2 border-black transform rotate-45"></div>
@@ -264,7 +257,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
                 )}
               </div>
 
-              {/* Description */}
               <div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 border-2 border-black transform -rotate-45"></div>
@@ -285,7 +277,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
                 )}
               </div>
 
-              {/* Artist Info */}
               <div className="bg-gradient-to-r from-yellow-200 to-orange-200 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 border-2 border-black transform rotate-12"></div>
@@ -305,7 +296,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
                 </div>
               </div>
 
-              {/* Stats */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-red-400 border-4 border-black p-4 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform -rotate-2">
                   <div className="text-2xl font-black text-white">#{art.art_id}</div>
@@ -324,7 +314,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
           </div>
         </div>
 
-        {/* Decorative Elements */}
         <div className="mt-12 flex justify-center gap-8">
           <div className="w-16 h-4 bg-black transform rotate-12"></div>
           <div className="w-24 h-4 bg-gradient-to-r from-purple-500 to-pink-500 border-2 border-black transform -rotate-6"></div>
@@ -332,7 +321,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
         </div>
       </div>
 
-      {/* Delete Modal */}
       {showDeleteModal && (
         <ModalDelete onClose={() => setShowDeleteModal(false)} onConfirm={handleDelete} loading={saving}>
           Are you sure you want to delete "{art.name}"?
