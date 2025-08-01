@@ -13,7 +13,8 @@ export default function Header() {
   const { user, logoutUser } = useUser()
 
   const pathname = usePathname()
-  const displayHeader = ["/", "/profile", "/feed"]
+  const displayHeader = ["/", "/profile", "/feed", "/my-art"]
+  const displayText = ["/feed", "/my-art"]
 
 
   const handleLogout = async () => {
@@ -41,9 +42,10 @@ export default function Header() {
             </h1>
           </Link>
 
-          {pathname === "/feed" && (
+
+          {displayText.includes(pathname) && (
             <h1 className="md:text-7xl mr-4 text-4xl font-black text-black tracking-tighter md:drop-shadow-[4px_4px_0px_rgba(0,0,0,1)] drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-              FEED
+              {pathname === "/feed" ? "FEED" : "MY ARTS"}
             </h1>
           )}
 

@@ -150,10 +150,10 @@ export default async function ProfileRolePage() {
 
           <div className="text-center">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-4 border-black font-black text-black text-lg hover:from-purple-400 hover:to-pink-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <Link href={"/profile/edit"} className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-4 border-black font-black text-black text-lg hover:from-purple-400 hover:to-pink-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 EDIT PROFILE
-              </button>
-              <Link href={"/art"} className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white border-4 border-black font-black text-black text-lg hover:from-green-400 hover:to-blue-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              </Link>
+              <Link href={"/my-art"} className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white border-4 border-black font-black text-black text-lg hover:from-green-400 hover:to-blue-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 VIEW MY ARTWORKS
               </Link>
             </div>

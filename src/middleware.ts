@@ -5,4 +5,4 @@ export function mainMiddleware() {
     return NextResponse.next()
 }
 
-export default withAuth(mainMiddleware, ["/art", "/admin", "/profile"])
+export default withAuth(mainMiddleware, ["/my-art", "/admin", "/profile"])

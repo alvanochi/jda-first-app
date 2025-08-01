@@ -8,6 +8,9 @@ export async function GET(req: NextRequest) {
   if (id) {
     const detailArt = await prisma.art.findUnique({
       where: { art_id: Number(id) },
+      include: {
+        user: true
+      },
     })
     if (detailArt) {
       return NextResponse.json({ status: 200, message: "success", data: detailArt })

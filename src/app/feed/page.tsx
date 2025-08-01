@@ -60,7 +60,7 @@ export default async function FeedPage() {
                     <span className="text-xs text-gray-600 font-bold">{art.createdAt ? new Date(art.createdAt).toLocaleDateString() : '-'}</span>
                   </div>
                 </div>
-                <Link href={`/art/${art.art_id}`} className="block">
+                <Link href={`/feed/${art.art_id}`} className="block">
                   <Image
                     src={art.image}
                     alt={art.name}
@@ -75,7 +75,7 @@ export default async function FeedPage() {
                   </h2>
                   <div className="flex justify-between items-center">
                     <Link
-                      href={`/art/${art.art_id}`}
+                      href={`/feed/${art.art_id}`}
                       className="bg-black text-blue-400 px-4 py-2 font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-blue-400 hover:text-black transition-all"
                     >
                       VIEW DETAILS

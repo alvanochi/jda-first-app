@@ -4,6 +4,7 @@ import { IArt } from "@/types/IArt";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import { Plus } from "lucide-react";
 
 async function getArts() {
   const session = await getServerSession(authOptions)
@@ -26,12 +27,6 @@ export default async function ArtPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-8 font-mono">
       <div className="max-w-5xl mx-auto">
-        <header className="mb-12 text-center">
-          <h1 className="text-7xl font-black text-black mb-4 tracking-tighter drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-            MY ARTS
-          </h1>
-          <div className="w-full h-6 bg-black transform rotate-1" />
-        </header>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {arts.length === 0 ? (
             <div className="col-span-2 text-center text-2xl text-black font-bold">No art found for this user.</div>
@@ -39,7 +34,7 @@ export default async function ArtPage() {
             arts.map((art: IArt) => (
               <Link
                 key={art.art_id}
-                href={`/art/${art.art_id}`}
+                href={`/my-art/${art.art_id}`}
                 className="block bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 transform hover:-rotate-2 hover:scale-105 transition-all duration-200"
               >
                 <div className="flex flex-col items-center">
@@ -62,6 +57,13 @@ export default async function ArtPage() {
           )}
         </div>
       </div>
+      <Link
+            href="/create-art"
+            className="fixed bottom-6 right-6 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-purple-300 to-pink-300 border-4 border-black flex items-center justify-center text-white hover:from-purple-400 hover:to-pink-400 transition-all duration-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[0_0_50px_rgba(6,182,212,1)] z-50"
+            title="Website Information"
+          >
+            <Plus className="md:w-8 md:h-8 w-6 h-6 text-black" />
+          </Link>
     </div>
   )
 }
