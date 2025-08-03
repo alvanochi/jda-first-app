@@ -1,10 +1,10 @@
 'use client'
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Edit, Trash2, Save, X } from "lucide-react"
-import ModalDelete from "@/components/ModalDelete"
-import { IArt } from "@/types/IArt"
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { Edit, Trash2, Save, X } from "lucide-react";
+import ModalDelete from "@/components/ModalDelete";
+import { IArt } from "@/types/IArt";
 
 async function getArtById(id: number): Promise<IArt | null> {
   const res = await fetch(`/api/art?id=${id}`)
@@ -13,6 +13,9 @@ async function getArtById(id: number): Promise<IArt | null> {
 }
 
 export default function DetailMyArt({ params }: { params: Promise<{ id: string }> }) {
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState("")
+  const [file, setFile] = useState<File | null>(null)
   const [art, setArt] = useState<IArt | null>(null)
   const [loading, setLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
@@ -22,13 +25,12 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
     description: "",
     image: "",
   })
+
   const [saving, setSaving] = useState(false)
-  const [id, setId] = useState<string>("")
 
   useEffect(() => {
     async function loadParams() {
       const resolvedParams = await params
-      setId(resolvedParams.id)
 
       const artData = await getArtById(Number.parseInt(resolvedParams.id))
       setArt(artData)
@@ -59,13 +61,37 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
       })
     }
     setIsEditing(false)
+    setFile(null)
+    setError("")
   }
 
   const handleSave = async () => {
     if (!art) return
 
     setSaving(true)
+    setError("")
     try {
+      let imageUrl = editForm.image
+      if (file) {
+        setUploading(true)
+        try {
+          const formData = new FormData()
+          formData.append('file', file)
+          const resUpload = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          })
+          if (!resUpload.ok) throw new Error('Image upload failed')
+          const { url } = await resUpload.json()
+          imageUrl = url
+        } catch (e) {
+          setError('Failed to upload image. Please try again.')
+          setUploading(false)
+          setSaving(false)
+          return
+        }
+        setUploading(false)
+      }
       const res = await fetch("/api/art", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -73,17 +99,19 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
           art_id: art.art_id,
           name: editForm.name,
           description: editForm.description,
-          image: editForm.image,
+          image: imageUrl,
         }),
       })
-
       if (res.ok) {
-        const updatedArt = { ...art, ...editForm }
+        const updatedArt = { ...art, ...editForm, image: imageUrl }
         setArt(updatedArt)
         setIsEditing(false)
+        setFile(null)
+      } else {
+        setError('Failed to update art.')
       }
     } catch (error) {
-      console.error("Failed to update art:", error)
+      setError("Failed to update art. Please try again.")
     }
     setSaving(false)
   }
@@ -198,20 +226,61 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
             <div className="flex flex-col items-center">
               {isEditing ? (
                 <div className="w-full">
-                  <label className="block text-xl font-black text-black mb-4">IMAGE URL:</label>
-                  <input
-                    type="text"
-                    value={editForm.image}
-                    onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
-                    className="w-full p-4 border-4 border-black font-bold text-lg mb-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                    placeholder="https://example.com/image.png"
-                  />
+                  <label className="block text-xl font-black text-black mb-4">ART IMAGE:</label>
+                  <div className="relative">
+                    <input
+                      id="fileUpload"
+                      type="file"
+                      accept="image/*"
+                      onChange={e => {
+                        const f = e.target.files?.[0]
+                        if (f) {
+                          setFile(f)
+                          setEditForm(fm => ({ ...fm, image: '' }))
+                        }
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div className="w-full p-4 border-4 border-black my-4 font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-blue-100 text-black text-center pointer-events-none">
+                      {file ? file.name : 'CHOOSE FILE'}
+                    </div>
+                  </div>
+                  {file && (
+                    <button
+                      type="button"
+                      className="mt-2 px-4 py-2 bg-green-500 text-white font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] mb-4"
+                      disabled={uploading}
+                      onClick={async () => {
+                        setUploading(true)
+                        setError("")
+                        try {
+                          const formData = new FormData()
+                          formData.append('file', file)
+                          const resUpload = await fetch('/api/upload', {
+                            method: 'POST',
+                            body: formData,
+                          })
+                          if (!resUpload.ok) throw new Error('Image upload failed')
+                          const { url } = await resUpload.json()
+                          setEditForm(fm => ({ ...fm, image: url }))
+                        } catch (e) {
+                          setError('Failed to upload image. Please try again.')
+                        }
+                        setUploading(false)
+                      }}
+                    >
+                      {uploading ? 'Uploading...' : 'Upload Image'}
+                    </button>
+                  )}
+                  {error && (
+                    <div className="mt-2 text-red-600 font-bold">{error}</div>
+                  )}
                 </div>
               ) : null}
 
               <div className="relative">
                 <img
-                  src={isEditing ? editForm.image : art.image}
+                  src={isEditing && editForm.image ? editForm.image : art.image}
                   alt={isEditing ? editForm.name : art.name}
                   width={400}
                   height={400}
@@ -240,7 +309,7 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
                     className="w-full text-4xl font-black text-black p-4 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-yellow-100"
                   />
                 ) : (
-                  <h1 className="text-4xl lg:text-5xl font-black text-black mb-4 tracking-tighter bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  <h1 className="text-4xl lg:text-5xl font-black text-black mb-4 tracking-tighter bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text">
                     {art.name}
                   </h1>
                 )}
@@ -285,20 +354,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-red-400 border-4 border-black p-4 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform -rotate-2">
-                  <div className="text-2xl font-black text-white">#{art.art_id}</div>
-                  <div className="text-sm font-bold text-black">ART ID</div>
-                </div>
-                <div className="bg-blue-400 border-4 border-black p-4 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
-                  <div className="text-2xl font-black text-white">PIXEL</div>
-                  <div className="text-sm font-bold text-black">ART</div>
-                </div>
-                <div className="bg-green-400 border-4 border-black p-4 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform -rotate-1">
-                  <div className="text-2xl font-black text-white">MINE</div>
-                  <div className="text-sm font-bold text-black">OWNED</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -40,6 +40,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const body = await req.json()
   try {
+    if(!body.name || !body.image) {
+      return NextResponse.json({ status: 400, message: "name and image are required", data: {} }, { status: 400 })
+    }
+    
     const newArt = await prisma.art.create({
       data: {
         name: body.name,
@@ -76,7 +80,7 @@ export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const id = searchParams.get("id")
   if (!id) {
-    return NextResponse.json({ status: 400, message: "id required", data: {} })
+    return NextResponse.json({ status: 400, message: "id required", data: {} }, { status: 400 })
   }
   try {
     const deleted = await prisma.art.delete({

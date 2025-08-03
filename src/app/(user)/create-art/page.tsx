@@ -1,26 +1,52 @@
 "use client"
 
-import { useState, type FormEvent, type ChangeEvent } from "react"
-import { useRouter } from "next/navigation"
-import { Palette, Save, Eye } from "lucide-react"
-import Image from "next/image"
-import { useSession } from "next-auth/react"
+import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
+import { Palette, Save, Eye } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function CreateArtPage() {
   const { push } = useRouter()
   const [form, setForm] = useState({
     name: "",
     description: "",
-    image: "https://cdn.lospec.com/thumbnails/gallery/kyle-d00/pixel-portrait-2-default.png",
+    image: "",
   })
+  const [file, setFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const { data: session, status } = useSession()
-  
+  const { data: session } = useSession()
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  async function handleFileUpload(file: File) {
+    setUploading(true)
+    
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!res.ok) return null
+
+      const { url } = await res.json()
+
+      setForm({ ...form, image: url })
+
+    } catch (e) {
+      console.error("File upload error:", e)
+      setError("Failed to upload image. Please try again.")
+    } finally {
+      setUploading(false)
+    }
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -29,6 +55,7 @@ export default function CreateArtPage() {
     setError("")
 
     try {
+
       const res = await fetch("/api/art", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,10 +70,19 @@ export default function CreateArtPage() {
       if (!res.ok) throw new Error("Failed to create art")
 
       push(`/my-art`)
-    } catch (e) {
-      setError("Failed to create art. Please try again.")
+    } catch (e: any) {
+      setError(e?.message || "Failed to create art. Please try again.")
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
+  }
+
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) {
+      setFile(file)
+      setForm({ ...form, image: '' })
+    }
   }
 
   return (
@@ -97,16 +133,32 @@ export default function CreateArtPage() {
               </div>
 
               <div>
-                <label className="block text-xl font-black text-black mb-4">IMAGE URL:</label>
-                <input
-                  type="url"
-                  name="image"
-                  value={form.image}
-                  onChange={handleChange}
-                  required
-                  className="w-full text-black p-4 border-4 border-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-blue-100 focus:bg-blue-200 transition-colors"
-                  placeholder="https://cdn.lospec.com/..."
-                />
+                <label className="block text-xl font-black text-black mb-4">ART IMAGE:</label>
+
+                <div className="relative">
+                  <input
+                    id="fileUpload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  
+                  <div className="w-full p-4 border-4 border-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-blue-100 text-black text-center pointer-events-none">
+                    {file ? file.name : 'CHOOSE FILE'}
+                  </div>
+                </div>
+
+                {file && (
+                  <button
+                    type="button"
+                    className="mt-2 px-4 py-2 bg-green-500 text-white font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                    disabled={uploading}
+                    onClick={async () => { await handleFileUpload(file) }}
+                  >
+                    {uploading ? 'Uploading...' : 'Upload Image'}
+                  </button>
+                )}
               </div>
 
               <div>
@@ -123,7 +175,7 @@ export default function CreateArtPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !form.name || !form.image}
                 className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-4 border-4 border-black font-black text-xl hover:from-green-400 hover:to-emerald-400 transition-all duration-200 transform hover:scale-105 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50"
               >
                 <Save className="w-6 h-6" />
@@ -144,7 +196,7 @@ export default function CreateArtPage() {
               <div className="text-center">
                 {form.image ? (
                   <div className="relative inline-block">
-                    <Image
+                    <img
                       src={form.image || "/placeholder.svg"}
                       alt={form.name || "Preview"}
                       width={300}
@@ -167,7 +219,7 @@ export default function CreateArtPage() {
               </div>
 
               <div>
-                <h3 className="text-3xl font-black text-black mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h3 className="text-3xl font-black text-black mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text">
                   {form.name || "Your Art Title"}
                 </h3>
               </div>
@@ -178,20 +230,6 @@ export default function CreateArtPage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                <div className="bg-red-400 border-2 border-black p-3 text-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transform -rotate-1">
-                  <div className="text-lg font-black text-white">NEW</div>
-                  <div className="text-xs font-bold text-black">STATUS</div>
-                </div>
-                <div className="bg-blue-400 border-2 border-black p-3 text-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
-                  <div className="text-lg font-black text-white">PIXEL</div>
-                  <div className="text-xs font-bold text-black">ART</div>
-                </div>
-                <div className="bg-green-400 border-2 border-black p-3 text-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transform -rotate-1">
-                  <div className="text-lg font-black text-white">MINE</div>
-                  <div className="text-xs font-bold text-black">OWNED</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

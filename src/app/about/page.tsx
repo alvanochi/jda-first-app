@@ -92,7 +92,7 @@ export default function AboutPage() {
 
             <div className="bg-black text-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]">
               <h2 className="text-xl font-bold text-white mb-3 uppercase tracking-wider">
-                Features
+                About
               </h2>
               <div className="space-y-2 text-xs">
                 <div className="flex items-center">
@@ -115,9 +115,9 @@ export default function AboutPage() {
                 </div>
                 <div className="flex items-center">
                   <span className="bg-white text-black px-2 py-1 font-bold mr-2">
-                    PAGES
+                    STACK
                   </span>
-                  <span className="font-bold text-white">soon...</span>
+                  <span className="font-bold text-white">NextAuth, Prisma, Vercel Blob, Neon, PostgreSQL</span>
                 </div>
               </div>
             </div>

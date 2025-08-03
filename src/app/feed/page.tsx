@@ -3,7 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Plus } from "lucide-react";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 async function getAllArts() {
   const arts = await prisma.art.findMany({
@@ -28,21 +28,9 @@ async function getAllArts() {
 export default async function FeedPage() {
   const arts = await getAllArts()
 
-  console.log(arts)
   const cardHeight = 420
   const gridRows = Math.ceil((arts.length * cardHeight) / 32) // 32px per row
   return (
-    <div className="bg-white p-8 font-mono relative overflow-hidden">
-      <div className="absolute inset-0 z-0 opacity-5 pointer-events-none">
-        <div
-          className="grid grid-cols-10 sm:grid-cols-20 gap-1"
-          style={{ height: `${Math.max(gridRows * 32, 800)}px` }}
-        >
-          {Array.from({ length: gridRows * 20 }).map((_, i) => (
-            <div key={i} className="bg-black w-full h-4 sm:h-8"></div>
-          ))}
-        </div>
-      </div>
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {arts.length === 0 ? (
@@ -82,7 +70,6 @@ export default async function FeedPage() {
                     >
                       VIEW DETAILS
                     </Link>
-                    <span className="text-xs text-gray-700 font-bold">by {art.user?.email ?? 'Unknown'}</span>
                   </div>
                 </div>
               </div>
@@ -90,13 +77,5 @@ export default async function FeedPage() {
           )}
         </div>
       </div>
-          <Link
-            href="/create-art"
-            className="fixed bottom-6 right-6 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-purple-300 to-pink-300 border-4 border-black flex items-center justify-center text-white hover:from-purple-400 hover:to-pink-400 transition-all duration-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[0_0_50px_rgba(6,182,212,1)] z-50"
-            title="Website Information"
-          >
-            <Plus className="md:w-8 md:h-8 w-6 h-6 text-black" />
-      </Link>
-    </div>
   )
 }
