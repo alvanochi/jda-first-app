@@ -34,7 +34,7 @@ export default function Input({
         placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}
-        className="border-2 border-black p-2 font-bold w-full pr-12"
+        className="border-2 text-black border-black p-2 font-bold w-full pr-12"
       />
       {isPassword && (
         <button

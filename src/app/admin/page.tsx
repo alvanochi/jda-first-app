@@ -1,15 +1,18 @@
 "use client"
 
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
-import { Users, Palette, Crown, Shield, Trash2, Edit, Plus } from "lucide-react"
-import ModalDelete from "@/components/ModalDelete"
-import type { IArt } from "@/types/IArt"
-import type { IUser } from "@/types/IUser"
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { Users, Palette, Crown, Shield, Trash2, Edit, Plus } from "lucide-react";
+import ModalDelete from "@/components/ModalDelete";
+import type { IArt } from "@/types/IArt";
+import type { IUser } from "@/types/IUser";
 
 type TabType = "arts" | "users"
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<TabType>("arts")
+
+  const [file, setFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   const [arts, setArts] = useState<IArt[]>([])
   const [artForm, setArtForm] = useState({
@@ -17,7 +20,7 @@ export default function AdminPage() {
     name: "",
     description: "",
     image: "",
-    user_id: 3,
+    user_id: null as number | null,
   })
   const [editArtId, setEditArtId] = useState<number | null>(null)
 
@@ -36,6 +39,15 @@ export default function AdminPage() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => setSuccess("") , 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [success])
+  
   const [showModal, setShowModal] = useState(false)
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [deleteType, setDeleteType] = useState<"art" | "user">("art")
@@ -44,7 +56,7 @@ export default function AdminPage() {
     setLoading(true)
     setError("")
     try {
-      const res = await fetch("/api/art")
+      const res = await fetch("/api/admin/art")
       const data = await res.json()
       setArts(data.data)
     } catch (e) {
@@ -75,10 +87,37 @@ export default function AdminPage() {
     setArtForm({ ...artForm, [e.target.name]: e.target.value })
   }
 
+  async function handleFileUpload(file: File) {
+    setUploading(true)
+    
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!res.ok) return null
+
+      const { url } = await res.json()
+
+      setArtForm({ ...artForm, image: url })
+
+    } catch (e) {
+      console.error("File upload error:", e)
+      setError("Failed to upload image. Please try again.")
+    } finally {
+      setUploading(false)
+    }
+  }
+
   async function handleArtSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError("")
+    setSuccess("")
 
     try {
       if (editArtId) {
@@ -88,6 +127,7 @@ export default function AdminPage() {
           body: JSON.stringify({ ...artForm, art_id: editArtId }),
         })
         if (!res.ok) throw new Error("Failed to update art")
+        setSuccess("Art updated successfully!")
       } else {
         const res = await fetch("/api/art", {
           method: "POST",
@@ -95,6 +135,7 @@ export default function AdminPage() {
           body: JSON.stringify(artForm),
         })
         if (!res.ok) throw new Error("Failed to create art")
+        setSuccess("Art added successfully!")
       }
 
       setArtForm({ art_id: null, name: "", description: "", image: "", user_id: 3 })
@@ -114,10 +155,19 @@ export default function AdminPage() {
     setUserForm({ ...userForm, [e.target.name]: value })
   }
 
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) {
+      setFile(file)
+      setArtForm({ ...artForm, image: '' })
+    }
+  }
+
   async function handleUserSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError("")
+    setSuccess("")
 
     try {
       if (editUserId) {
@@ -127,6 +177,7 @@ export default function AdminPage() {
           body: JSON.stringify({ ...userForm, user_id: editUserId }),
         })
         if (!res.ok) throw new Error("Failed to update user")
+        setSuccess("User updated successfully!")
       } else {
         const res = await fetch("/api/user", {
           method: "POST",
@@ -134,13 +185,14 @@ export default function AdminPage() {
           body: JSON.stringify(userForm),
         })
         if (!res.ok) throw new Error("Failed to create user")
+        setSuccess("User added successfully!")
       }
 
       setUserForm({ user_id: null, name: "", email: "", password: "", role: "user", level: 1, point: 0, artCount: 0 })
       setEditUserId(null)
       await fetchUsers()
     } catch (e) {
-      setError("Failed to save user")
+      setError("Failed to save/create user")
     }
     setLoading(false)
   }
@@ -151,7 +203,7 @@ export default function AdminPage() {
       name: art.name,
       description: art.description ?? "",
       image: art.image,
-      user_id: art.user_id,
+      user_id: art.user?.user_id ?? null,
     })
     setEditArtId(art.art_id)
   }
@@ -185,6 +237,8 @@ export default function AdminPage() {
       const endpoint = deleteType === "art" ? "/api/art" : "/api/user"
       const res = await fetch(`${endpoint}?id=${deleteId}`, { method: "DELETE" })
       if (!res.ok) throw new Error(`Failed to delete ${deleteType}`)
+
+      setSuccess(`${deleteType.charAt(0).toUpperCase() + deleteType.slice(1)} deleted successfully!`)
 
       if (deleteType === "art") {
         await fetchArts()
@@ -277,6 +331,11 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {success && (
+          <div className="bg-green-400 border-6 border-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform -rotate-1">
+            <div className="text-2xl font-black text-white text-center">{success}</div>
+          </div>
+        )}
         {error && (
           <div className="bg-red-400 border-6 border-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
             <div className="text-2xl font-black text-white text-center">{error}</div>
@@ -299,38 +358,33 @@ export default function AdminPage() {
                   {arts.map((art) => (
                     <div
                       key={art.art_id}
-                      className="bg-gradient-to-r from-blue-100 to-purple-100 border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+                      className="bg-gradient-to-r from-blue-100 to-purple-100 border-4 border-black p-4 md:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
                     >
-                      <div className="flex items-center gap-6">
+                      <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 w-full">
                         <img
                           src={art.image || "/placeholder.svg"}
                           alt={art.name}
-                          width={80}
-                          height={80}
-                          className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white object-contain"
+                          className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white object-contain w-24 h-24 md:w-20 md:h-20 mb-4 md:mb-0"
                         />
-                        <div className="flex-1">
-                          <h3 className="text-2xl font-black text-black mb-2">{art.name}</h3>
-                          <p className="text-lg font-bold text-gray-700 mb-2">{art.description || "No description"}</p>
-                          <div className="flex gap-2">
-                            <span className="bg-blue-500 text-white px-3 py-1 border-2 border-black font-black text-sm">
-                              ID: {art.art_id}
-                            </span>
-                            <span className="bg-green-500 text-white px-3 py-1 border-2 border-black font-black text-sm">
-                              USER: {art.user_id}
+                        <div className="flex-1 w-full">
+                          <h3 className="text-xl md:text-2xl font-black text-black mb-2">{art.name}</h3>
+                          <p className="text-base md:text-lg font-bold text-gray-700 mb-2">{art.description || "No description"}</p>
+                          <div className="flex flex-wrap gap-2">
+                            <span className="bg-green-500 text-white px-2 md:px-3 py-1 border-2 border-black font-black text-xs md:text-sm">
+                              USER: {art.user?.name}
                             </span>
                           </div>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 mt-4 md:mt-0">
                           <button
                             onClick={() => handleEditArt(art)}
-                            className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 border-4 border-black flex items-center justify-center hover:from-yellow-300 hover:to-orange-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                            className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-yellow-400 to-orange-400 border-4 border-black flex items-center justify-center hover:from-yellow-300 hover:to-orange-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                           >
                             <Edit className="w-5 h-5 text-black" />
                           </button>
                           <button
                             onClick={() => handleDeleteClick(art.art_id, "art")}
-                            className="w-12 h-12 bg-gradient-to-r from-red-400 to-pink-400 border-4 border-black flex items-center justify-center hover:from-red-300 hover:to-pink-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                            className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-red-400 to-pink-400 border-4 border-black flex items-center justify-center hover:from-red-300 hover:to-pink-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                           >
                             <Trash2 className="w-5 h-5 text-black" />
                           </button>
@@ -364,19 +418,37 @@ export default function AdminPage() {
                       placeholder="Art name..."
                     />
                   </div>
+f
+                  {!editArtId && (
+                    <div>
+                      <label className="block text-xl font-black text-black mb-4">ART IMAGE:</label>
 
-                  <div>
-                    <label className="block text-xl font-black text-black mb-2">IMAGE URL:</label>
-                    <input
-                      type="url"
-                      name="image"
-                      value={artForm.image}
-                      onChange={handleArtChange}
-                      required
-                      className="w-full p-4 border-4 border-black text-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-blue-100"
-                      placeholder="https://example.com/image.png"
-                    />
-                  </div>
+                      <div className="relative">
+                        <input
+                          id="fileUpload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        />
+                        
+                        <div className="w-full p-4 border-4 border-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-blue-100 text-black text-center pointer-events-none">
+                          {file ? file.name : 'CHOOSE FILE'}
+                        </div>
+                      </div>
+
+                      {file && (
+                        <button
+                          type="button"
+                          className="mt-2 px-4 py-2 bg-green-500 text-white font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                          disabled={uploading}
+                          onClick={async () => { await handleFileUpload(file) }}
+                        >
+                          {uploading ? 'Uploading...' : 'Upload Image'}
+                        </button>
+                      )}
+                    </div>
+                  )}
 
                   <div>
                     <label className="block text-xl font-black text-black mb-2">DESCRIPTION:</label>
@@ -395,11 +467,12 @@ export default function AdminPage() {
                     <input
                       type="number"
                       name="user_id"
-                      value={artForm.user_id}
+                      value={artForm.user_id || ""}
                       onChange={handleArtChange}
                       required
                       className="w-full p-4 border-4 border-black text-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-purple-100"
                       placeholder="User ID..."
+                      readOnly={!!editArtId}
                     />
                   </div>
 
@@ -445,51 +518,51 @@ export default function AdminPage() {
                   {users.map((user) => (
                     <div
                       key={user.user_id}
-                      className="bg-gradient-to-r from-green-100 to-blue-100 border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] "
+                      className="bg-gradient-to-r from-green-100 to-blue-100 border-4 border-black p-4 md:p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
                     >
-                      <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 border-4 border-black flex items-center justify-center transform rotate-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                          <span className="text-2xl font-black text-white">{user.name.charAt(0)}</span>
+                      <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 w-full">
+                        <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-purple-500 to-pink-500 border-4 border-black flex items-center justify-center transform rotate-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4 md:mb-0">
+                          <span className="text-xl md:text-2xl font-black text-white">{user.name.charAt(0)}</span>
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-2xl font-black text-black">{user.name}</h3>
+                        <div className="flex-1 w-full">
+                          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 mb-2">
+                            <h3 className="text-lg md:text-2xl font-black text-black">{user.name}</h3>
                             {user.role === "admin" && (
-                              <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 border-2 border-black flex items-center justify-center transform rotate-12">
+                              <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-br from-red-500 to-orange-500 border-2 border-black flex items-center justify-center transform rotate-12">
                                 <Crown className="w-4 h-4 text-white" />
                               </div>
                             )}
                           </div>
-                          <p className="text-lg font-bold text-gray-700 mb-2">{user.email}</p>
-                          <div className="flex gap-2">
+                          <p className="text-base md:text-lg font-bold text-gray-700 mb-2 text-center md:text-left">{user.email}</p>
+                          <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                             <span
-                              className={`px-3 py-1 border-2 border-black font-black text-sm ${
+                              className={`px-2 md:px-3 py-1 border-2 border-black font-black text-xs md:text-sm ${
                                 user.role === "admin" ? "bg-red-500 text-white" : "bg-blue-500 text-white"
                               }`}
                             >
                               {user.role.toUpperCase()}
                             </span>
-                            <span className="bg-green-500 text-white px-3 py-1 border-2 border-black font-black text-sm">
+                            <span className="bg-green-500 text-white px-2 md:px-3 py-1 border-2 border-black font-black text-xs md:text-sm">
                               LVL {user.level}
                             </span>
-                            <span className="bg-yellow-500 text-black px-3 py-1 border-2 border-black font-black text-sm">
+                            <span className="bg-yellow-500 text-black px-2 md:px-3 py-1 border-2 border-black font-black text-xs md:text-sm">
                               {user.point} PTS
                             </span>
-                            <span className="bg-purple-500 text-white px-3 py-1 border-2 border-black font-black text-sm">
+                            <span className="bg-purple-500 text-white px-2 md:px-3 py-1 border-2 border-black font-black text-xs md:text-sm">
                               {user.artCount} ARTS
                             </span>
                           </div>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 mt-4 md:mt-0">
                           <button
                             onClick={() => handleEditUser(user)}
-                            className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 border-4 border-black flex items-center justify-center hover:from-yellow-300 hover:to-orange-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                            className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-yellow-400 to-orange-400 border-4 border-black flex items-center justify-center hover:from-yellow-300 hover:to-orange-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                           >
                             <Edit className="w-5 h-5 text-black" />
                           </button>
                           <button
                             onClick={() => handleDeleteClick(user.user_id, "user")}
-                            className="w-12 h-12 bg-gradient-to-r from-red-400 to-pink-400 border-4 border-black flex items-center justify-center hover:from-red-300 hover:to-pink-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                            className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-red-400 to-pink-400 border-4 border-black flex items-center justify-center hover:from-red-300 hover:to-pink-300 transition-all duration-200 transform hover:scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                           >
                             <Trash2 className="w-5 h-5 text-black" />
                           </button>
@@ -547,7 +620,6 @@ export default function AdminPage() {
                       required={!editUserId} 
                       className="w-full p-4 border-4 border-black text-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-red-100"
                       placeholder={editUserId ? "Leave blank to keep current password" : "Enter password..."}
-                      disabled
                     />
                   </div>
 

@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect, type FormEvent, type ChangeEvent } from "react"
-import { useRouter } from "next/navigation"
-import { ArrowLeft, Save, User, Crown, X } from "lucide-react"
-import Link from "next/link"
-import Input from "@/components/Input"
-import { useSession } from "next-auth/react"
+import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
+import { Save, User, Crown, X } from "lucide-react";
+import Link from "next/link";
+import Input from "@/components/Input";
+import { useSession } from "next-auth/react";
 
 interface UserProfile {
   user_id: number
@@ -76,6 +76,13 @@ export default function EditProfilePage() {
     fetchUserProfile()
   }, [session, status])
 
+  useEffect(() => {
+      if (success) {
+        const timer = setTimeout(() => setSuccess("") , 3000)
+        return () => clearTimeout(timer)
+      }
+    }, [success])
+
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value })
     if (error) setError("")
@@ -124,9 +131,6 @@ export default function EditProfilePage() {
         setUser({ ...user, name: form.name, email: form.email })
         setForm({ ...form, password: "", confirmPassword: "" })
 
-        setTimeout(() => {
-          router.push("/profile")
-        }, 2000)
       } else {
         setError(data.message || "Failed to update profile")
       }
@@ -221,12 +225,6 @@ export default function EditProfilePage() {
           <div className="bg-green-400 border-6 border-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform -rotate-1">
             <div className="flex items-center justify-between">
               <div className="text-2xl font-black text-white">{success}</div>
-              <button
-                onClick={() => setSuccess("")}
-                className="w-8 h-8 bg-white border-2 border-black flex items-center justify-center hover:bg-gray-100 transition-colors"
-              >
-                <X className="w-4 h-4 text-black" />
-              </button>
             </div>
           </div>
         )}

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { hash } from "bcrypt"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(req: NextRequest) {
@@ -37,14 +38,18 @@ export async function POST(req: NextRequest) {
         message: "Email already exists",
         data: {},
         error: "Email must be unique",
-      })
+      }, { status: 400 })
     }
 
+    let hashedPassword = body.password
+    if (body.password && body.password.trim() !== "") {
+      hashedPassword = await hash(body.password, 10)
+    }
     const newUser = await prisma.user.create({
       data: {
         name: body.name,
         email: body.email,
-        password: body.password,
+        password: hashedPassword,
         role: body.role ?? "user",
         level: body.level ?? 1,
         point: body.point ?? 0,
@@ -94,7 +99,7 @@ export async function PUT(req: NextRequest) {
     }
 
     if (body.password && body.password.trim() !== "") {
-      updateData.password = body.password
+      updateData.password = await hash(body.password, 10)
     }
 
     const updated = await prisma.user.update({
