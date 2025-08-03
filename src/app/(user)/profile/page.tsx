@@ -71,9 +71,9 @@ export default async function ProfileRolePage() {
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 border-4 border-black mx-auto mb-4 flex items-center justify-center transform rotate-3">
                 <Calendar className="w-8 h-8 text-white" />
               </div>
-              <div className="text-2xl font-black text-black mb-2 font-mono text-blue-600">
+              <div className="text-2xl font-black mb-2 font-mono text-blue-600">
               </div>
-              <div className="text-2xl font-black text-black mb-2 font-mono text-red-600">
+              <div className="text-2xl font-black mb-2 font-mono text-red-600">
                 {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-"}
               </div>
               <div className="text-sm font-bold text-gray-700">JOINED</div>
@@ -83,7 +83,7 @@ export default async function ProfileRolePage() {
               <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-500 border-4 border-black mx-auto mb-4 flex items-center justify-center transform -rotate-2">
                 <Palette className="w-8 h-8 text-white" />
               </div>
-              <div className="text-2xl font-black text-black mb-2 font-mono text-red-600">{totalArt}</div>
+              <div className="text-2xl font-black mb-2 font-mono text-red-600">{totalArt}</div>
               <div className="text-sm font-bold text-gray-700">ARTWORKS</div>
             </div>
 
@@ -91,7 +91,7 @@ export default async function ProfileRolePage() {
               <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 border-4 border-black mx-auto mb-4 flex items-center justify-center transform rotate-1">
                 <Star className="w-8 h-8 text-white" />
               </div>
-              <div className="text-2xl font-black text-black mb-2 font-mono text-yellow-600">{user?.point.toLocaleString()}</div>
+              <div className="text-2xl font-black mb-2 font-mono text-yellow-600">{user?.point.toLocaleString()}</div>
               <div className="text-sm font-bold text-gray-700">POINTS</div>
             </div>
 
@@ -99,7 +99,7 @@ export default async function ProfileRolePage() {
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 border-4 border-black mx-auto mb-4 flex items-center justify-center transform -rotate-1">
                 <Trophy className="w-8 h-8 text-white" />
               </div>
-              <div className="text-2xl font-black text-black mb-2 font-mono text-green-600">{user?.level}</div>
+              <div className="text-2xl font-black mb-2 font-mono text-green-600">{user?.level}</div>
               <div className="text-sm font-bold text-gray-700">LEVEL</div>
             </div>
           </div>
@@ -133,15 +133,15 @@ export default async function ProfileRolePage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-3 bg-white border-2 border-black">
                     <span className="font-bold text-black">Current Level:</span>
-                    <span className="font-black text-black text-green-600">LEVEL {user?.level}</span>
+                    <span className="font-black text-green-600">LEVEL {user?.level}</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-white border-2 border-black">
                     <span className="font-bold text-black">Total Points:</span>
-                    <span className="font-black text-black text-yellow-600">{user?.point.toLocaleString()}</span>
+                    <span className="font-black text-yellow-600">{user?.point.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-white border-2 border-black">
                     <span className="font-bold text-black">Artworks Created:</span>
-                    <span className="font-black text-black text-red-600">{totalArt}</span>
+                    <span className="font-black text-red-600">{totalArt}</span>
                   </div>
                 </div>
               </div>
@@ -150,10 +150,10 @@ export default async function ProfileRolePage() {
 
           <div className="text-center">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href={"/profile/edit"} className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-4 border-black font-black text-black text-lg hover:from-purple-400 hover:to-pink-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <Link href={"/profile/edit"} className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-4 border-black font-black text-lg hover:from-purple-400 hover:to-pink-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 EDIT PROFILE
               </Link>
-              <Link href={"/my-art"} className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white border-4 border-black font-black text-black text-lg hover:from-green-400 hover:to-blue-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <Link href={"/my-art"} className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white border-4 border-black font-black text-lg hover:from-green-400 hover:to-blue-400 transition-all duration-200 transform hover:scale-105 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 VIEW MY ARTWORKS
               </Link>
             </div>

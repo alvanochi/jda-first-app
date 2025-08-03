@@ -159,7 +159,7 @@ export default function EditProfilePage() {
           <p className="text-2xl font-bold text-black text-center mb-8">
             Please login to access this page.
             <br />
-            <Link href="/auth/signin" className="underline hover:text-blue-400">
+            <Link href="/login" className="underline hover:text-blue-400">
               Click here to login
             </Link>
           </p>

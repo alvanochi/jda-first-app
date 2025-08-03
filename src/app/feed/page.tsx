@@ -1,7 +1,6 @@
 
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { Plus } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +13,7 @@ async function getAllArts() {
             email: true
         }
     } },
+    orderBy: { createdAt: "desc" },
   })
   return arts.map((art) => ({
     art_id: art.art_id,
