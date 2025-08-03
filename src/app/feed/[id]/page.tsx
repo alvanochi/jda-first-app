@@ -43,7 +43,7 @@ export default async function DetailArt({ params }: { params: Promise<{ id: stri
     
     
   return (
-    <>
+    <div className="flex flex-col items-center justify-center">
       <div className="bg-white border-8 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-2xl w-full p-8 flex flex-col items-center transform -rotate-2">
         <div className="w-full flex justify-center mb-8">
           <img
@@ -76,6 +76,6 @@ export default async function DetailArt({ params }: { params: Promise<{ id: stri
         <div className="h-4 bg-black -rotate-2" />
       </div>
 
-    </>
+    </div>
   )
 }

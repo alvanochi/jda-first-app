@@ -13,9 +13,6 @@ async function getArtById(id: number): Promise<IArt | null> {
 }
 
 export default function DetailMyArt({ params }: { params: Promise<{ id: string }> }) {
-  const [uploading, setUploading] = useState(false)
-  const [error, setError] = useState("")
-  const [file, setFile] = useState<File | null>(null)
   const [art, setArt] = useState<IArt | null>(null)
   const [loading, setLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
@@ -23,8 +20,10 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
   const [editForm, setEditForm] = useState({
     name: "",
     description: "",
-    image: "",
   })
+
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
 
   const [saving, setSaving] = useState(false)
 
@@ -39,7 +38,6 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
         setEditForm({
           name: artData.name,
           description: artData.description || "",
-          image: artData.image,
         })
       }
       setLoading(false)
@@ -57,12 +55,9 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
       setEditForm({
         name: art.name,
         description: art.description || "",
-        image: art.image,
       })
     }
     setIsEditing(false)
-    setFile(null)
-    setError("")
   }
 
   const handleSave = async () => {
@@ -70,28 +65,8 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
 
     setSaving(true)
     setError("")
+    setSuccess("")
     try {
-      let imageUrl = editForm.image
-      if (file) {
-        setUploading(true)
-        try {
-          const formData = new FormData()
-          formData.append('file', file)
-          const resUpload = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-          })
-          if (!resUpload.ok) throw new Error('Image upload failed')
-          const { url } = await resUpload.json()
-          imageUrl = url
-        } catch (e) {
-          setError('Failed to upload image. Please try again.')
-          setUploading(false)
-          setSaving(false)
-          return
-        }
-        setUploading(false)
-      }
       const res = await fetch("/api/art", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -99,19 +74,21 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
           art_id: art.art_id,
           name: editForm.name,
           description: editForm.description,
-          image: imageUrl,
         }),
       })
       if (res.ok) {
-        const updatedArt = { ...art, ...editForm, image: imageUrl }
+        const updatedArt = { ...art, ...editForm }
         setArt(updatedArt)
         setIsEditing(false)
-        setFile(null)
+        setSuccess("Art updated successfully!")
+        setTimeout(() => setSuccess("") , 3000)
       } else {
         setError('Failed to update art.')
+        setTimeout(() => setError("") , 3000)
       }
     } catch (error) {
       setError("Failed to update art. Please try again.")
+      setTimeout(() => setError("") , 3000)
     }
     setSaving(false)
   }
@@ -120,16 +97,26 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
     if (!art) return
 
     setSaving(true)
+    setError("")
+    setSuccess("")
     try {
       const res = await fetch(`/api/art?id=${art.art_id}`, {
         method: "DELETE",
       })
 
       if (res.ok) {
-        window.location.href = "/my-art"
+        setSuccess("Art deleted successfully!")
+        setTimeout(() => {
+          setSuccess("")
+          window.location.href = "/my-art"
+        }, 1500)
+      } else {
+        setError("Failed to delete art.")
+        setTimeout(() => setError("") , 3000)
       }
     } catch (error) {
-      console.error("Failed to delete art:", error)
+      setError("Failed to delete art. Please try again.")
+      setTimeout(() => setError("") , 3000)
     }
     setSaving(false)
     setShowDeleteModal(false)
@@ -170,6 +157,16 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-pink-300 p-8 font-mono relative overflow-hidden">
+      {success && (
+        <div className="bg-green-400 border-6 border-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform -rotate-1 fixed top-8 left-1/2 -translate-x-1/2 z-50">
+          <div className="text-2xl font-black text-white text-center">{success}</div>
+        </div>
+      )}
+      {error && (
+        <div className="bg-red-400 border-6 border-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform rotate-1 fixed top-8 left-1/2 -translate-x-1/2 z-50">
+          <div className="text-2xl font-black text-white text-center">{error}</div>
+        </div>
+      )}
       <div className="absolute inset-0 opacity-10">
         <div className="grid grid-cols-20 gap-1 h-full">
           {Array.from({ length: 400 }).map((_, i) => (
@@ -224,63 +221,10 @@ export default function DetailMyArt({ params }: { params: Promise<{ id: string }
         <div className="bg-white border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] p-8 transform -rotate-1 hover:rotate-0 transition-all duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div className="flex flex-col items-center">
-              {isEditing ? (
-                <div className="w-full">
-                  <label className="block text-xl font-black text-black mb-4">ART IMAGE:</label>
-                  <div className="relative">
-                    <input
-                      id="fileUpload"
-                      type="file"
-                      accept="image/*"
-                      onChange={e => {
-                        const f = e.target.files?.[0]
-                        if (f) {
-                          setFile(f)
-                          setEditForm(fm => ({ ...fm, image: '' }))
-                        }
-                      }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                    />
-                    <div className="w-full p-4 border-4 border-black my-4 font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-blue-100 text-black text-center pointer-events-none">
-                      {file ? file.name : 'CHOOSE FILE'}
-                    </div>
-                  </div>
-                  {file && (
-                    <button
-                      type="button"
-                      className="mt-2 px-4 py-2 bg-green-500 text-white font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] mb-4"
-                      disabled={uploading}
-                      onClick={async () => {
-                        setUploading(true)
-                        setError("")
-                        try {
-                          const formData = new FormData()
-                          formData.append('file', file)
-                          const resUpload = await fetch('/api/upload', {
-                            method: 'POST',
-                            body: formData,
-                          })
-                          if (!resUpload.ok) throw new Error('Image upload failed')
-                          const { url } = await resUpload.json()
-                          setEditForm(fm => ({ ...fm, image: url }))
-                        } catch (e) {
-                          setError('Failed to upload image. Please try again.')
-                        }
-                        setUploading(false)
-                      }}
-                    >
-                      {uploading ? 'Uploading...' : 'Upload Image'}
-                    </button>
-                  )}
-                  {error && (
-                    <div className="mt-2 text-red-600 font-bold">{error}</div>
-                  )}
-                </div>
-              ) : null}
 
               <div className="relative">
                 <img
-                  src={isEditing && editForm.image ? editForm.image : art.image}
+                  src={art.image}
                   alt={isEditing ? editForm.name : art.name}
                   width={400}
                   height={400}
